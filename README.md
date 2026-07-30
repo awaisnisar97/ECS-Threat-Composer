@@ -1,5 +1,3 @@
-# Production-Ready-ECS-Platform-on-AWS
-
 # Production Ready ECS Platform on AWS
 
 ## Overview
