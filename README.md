@@ -2,39 +2,33 @@
 
 ## Overview
 
-This project demonstrates the design, deployment and automation of a production style containerised application running on Amazon ECS Fargate.
+This project demonstrates the design, deployment and automation of a containerised application running on Amazon ECS Fargate.
 
-The goal was to build a complete cloud deployment workflow using modern DevOps practices. The project follows a real world approach by first understanding the AWS services through a manual deployment before rebuilding the environment using Infrastructure as Code and automating deployments through CI/CD.
+The objective was to build a production style cloud deployment workflow using Docker, Terraform, AWS services and GitHub Actions. The project follows a real world DevOps approach by first understanding the AWS services through manual deployment before recreating the infrastructure using Infrastructure as Code and automating deployments through CI/CD.
 
-The final solution provides a secure, scalable and repeatable way to deploy containerised applications on AWS.
-
----
-
-# Project Objectives
-
-The main objectives of this project were to:
-
-- Build and containerise an application using Docker
-- Deploy a containerised workload using Amazon ECS Fargate
-- Store and manage container images using Amazon ECR
-- Provision AWS infrastructure using Terraform
-- Configure HTTPS using AWS Certificate Manager
-- Configure custom domain routing using Route 53
-- Implement automated deployments using GitHub Actions
-- Use OpenID Connect for secure AWS authentication
-- Apply cloud security best practices using IAM and security groups
+The final solution provides a secure and repeatable approach for deploying containerised applications on AWS.
 
 ---
 
 # Architecture Overview
 
-The application is deployed using a production style AWS architecture.
+The application is hosted on AWS using ECS Fargate with a container image stored in Amazon Elastic Container Registry (ECR).
 
-User traffic is routed through Route 53 to an Application Load Balancer secured with HTTPS. The load balancer distributes requests to an ECS Fargate service running Docker containers. Container images are stored in Amazon Elastic Container Registry, and application logs are collected using Amazon CloudWatch.
+User traffic flows through Route 53 to an Application Load Balancer secured with HTTPS using an AWS Certificate Manager (ACM) TLS certificate. The ALB forwards requests to the ECS Fargate service running the containerised application.
 
-The infrastructure is designed to be secure, scalable and fully reproducible using Terraform.
+Infrastructure is provisioned using Terraform and application logs are collected using Amazon CloudWatch.
 
+Architecture components:
 
+- Route 53 for custom domain routing
+- Application Load Balancer for traffic distribution
+- ACM for HTTPS/TLS certificates
+- ECS Fargate for container orchestration
+- ECR for container image storage
+- VPC and security groups for networking
+- CloudWatch for application logging
+
+![AWS Architecture](diagrams/aws_architecture.png)
 
 ---
 
@@ -44,153 +38,126 @@ The infrastructure is designed to be secure, scalable and fully reproducible usi
 
 **Amazon Web Services**
 
-AWS services used:
+Services used:
 
 - Amazon ECS Fargate
 - Amazon Elastic Container Registry (ECR)
 - Application Load Balancer
 - Amazon VPC
 - Route 53
-- AWS Certificate Manager
+- AWS Certificate Manager (ACM)
 - Identity and Access Management (IAM)
 - Amazon CloudWatch
 
 ---
 
-## Infrastructure as Code
+# Containerisation
 
-**Terraform**
+## Docker
 
-Terraform is used to provision and manage AWS infrastructure.
+The application is containerised using Docker.
 
-Implemented:
-
-- VPC and networking components
-- ECS cluster and services
-- Application Load Balancer configuration
-- Security groups
-- IAM roles
-- ECR repository
-- DNS configuration
-- SSL certificate management
-
----
-
-## Containerisation
-
-**Docker**
-
-Implemented:
+Features implemented:
 
 - Multi stage Docker builds
-- Optimised container images
+- Optimised container image size
 - Non root container execution
 - Container health checks
 - Local container testing before deployment
 
+Application health endpoint:
+
+```
+GET /health
+
+{
+  "status": "ok"
+}
+```
+
 ---
 
-## CI/CD Automation
+# Infrastructure as Code
 
-**GitHub Actions**
+## Terraform
+
+Terraform is used to provision and manage AWS infrastructure.
+
+Features implemented:
+
+- Modular Terraform structure
+- VPC and networking resources
+- ECS cluster and Fargate service
+- Application Load Balancer
+- ECR repository
+- IAM roles and policies
+- Security groups
+- Route 53 DNS configuration
+- ACM certificate management
+
+Terraform state management:
+
+- Remote Terraform state stored securely in Amazon S3
+- DynamoDB state locking to prevent concurrent infrastructure changes
+- Encrypted state storage
+
+This provides a reliable and collaborative Infrastructure as Code workflow.
+
+---
+
+# CI/CD Automation
+
+## GitHub Actions
 
 The deployment pipeline automates:
 
-- Docker image creation
-- Image tagging
-- Pushing images to Amazon ECR
+- Docker image building
+- Image tagging using commit SHA
+- Publishing images to Amazon ECR
 - Terraform validation
-- Infrastructure deployment
-- Application health checks after deployment
+- Terraform deployment
+- ECS application updates
+- Post deployment health checks
+
+AWS authentication uses OpenID Connect (OIDC) instead of storing long lived AWS credentials.
 
 ---
 
-# Deployment Approach
+# Security Features
 
-This project follows a production style deployment workflow.
+Implemented security practices:
 
-The process begins with understanding how the AWS services work together through manual configuration.
-
-Once the application is successfully deployed manually, the infrastructure is removed and recreated using Terraform.
-
-This approach ensures a strong understanding of both:
-
-**Manual AWS operations**
-
-Understanding how ECS, networking, load balancing and security components work together.
-
-**Infrastructure as Code**
-
-Creating repeatable, version-controlled and automated infrastructure deployments.
+- HTTPS encryption using ACM TLS certificates
+- IAM roles following least privilege principles
+- GitHub Actions OIDC authentication
+- Restricted access using security groups
+- Non root Docker containers
+- Separation of application and infrastructure code
 
 ---
 
-# Security Implementation
+# Lessons Learned
 
-Security has been considered throughout the project.
+This project provided practical experience with:
 
-Implemented:
+- Deploying containerised workloads using ECS Fargate
+- Building secure AWS infrastructure using Terraform
+- Managing Terraform state in a production style workflow
+- Automating cloud deployments using GitHub Actions
+- Understanding AWS networking, load balancing and IAM
 
-- HTTPS encryption using AWS Certificate Manager
-- IAM roles instead of long lived AWS access keys
-- GitHub Actions authentication using OpenID Connect
-- Restricted network access using security groups
-- Non root Docker container execution
-- Separation of application and infrastructure configuration
-
----
-
-# Continuous Integration and Deployment Workflow
-
-The automated deployment process follows this flow:
-
-1. Developer pushes code changes to GitHub
-
-2. GitHub Actions starts the deployment workflow
-
-3. Docker image is built and tagged
-
-4. Image is pushed to Amazon ECR
-
-5. Terraform validates and deploys AWS infrastructure changes
-
-6. ECS Fargate deploys the updated application
-
-7. Automated health checks confirm successful deployment
-
----
-
-# Screenshots
-
-Screenshots will be added showing:
-
-- Application running locally
-- Docker container running successfully
-- Amazon ECR image repository
-- ECS service deployment
-- HTTPS application endpoint
-- GitHub Actions pipeline success
-- Terraform deployment output
-- CloudWatch application logs
+A key learning was understanding the transition from manual cloud configuration to repeatable Infrastructure as Code and automated deployment workflows.
 
 ---
 
 # Future Improvements
 
-Potential improvements include:
+Potential improvements:
 
-- Add AWS Secrets Manager integration
-- Add container vulnerability scanning using Trivy
-- Add Terraform security scanning
 - Implement ECS auto scaling
 - Add AWS WAF protection
-- Implement blue/green deployments
-- Add monitoring dashboards
-
----
-
-# Key Learning Outcomes
-
-This project provides hands on experience designing and deploying cloud infrastructure using AWS, Terraform, Docker and CI/CD automation.
-
-It demonstrates practical knowledge of container orchestration, Infrastructure as Code, cloud networking, security practices and automated deployment workflows used in modern DevOps environments.
+- Add container vulnerability scanning using Trivy
+- Add Terraform security scanning
+- Introduce blue green deployments
+- Add improved monitoring dashboards
+- Integrate AWS Secrets Manager for application secrets
