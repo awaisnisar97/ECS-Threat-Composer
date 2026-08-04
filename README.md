@@ -50,7 +50,16 @@ Services used:
 - Amazon CloudWatch
 
 ---
+# Local App Setup 💻
+```
+yarn install
+yarn build
+yarn global add serve
+serve -s build
 
+Then visit:
+http://localhost:3000
+```
 # Containerisation
 
 ## Docker
@@ -149,6 +158,16 @@ This project provided practical experience with:
 A key learning was understanding the transition from manual cloud configuration to repeatable Infrastructure as Code and automated deployment workflows.
 
 ---
+
+# Common issues & Troubleshooting
+
+For MACOS 
+- After running `yarn global add serve`, the terminal may return `command not found: serve`.
+- This occurs because the Yarn global binary directory is not included in your PATH.
+- To fix this, check the Yarn global binary location: via 'yarn global bin', then add the yarn global bin directory to your PATH via 'echo 'export PATH="$PATH:$(yarn global bin)"' >> ~/.zshrc' 
+- Reload shell 'source ~/.zshrc' and run 'serve -s build'  
+
+
 
 # Future Improvements
 
