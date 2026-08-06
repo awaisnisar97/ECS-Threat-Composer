@@ -74,6 +74,8 @@ Features implemented:
 - Container health checks
 - Local container testing before deployment
 
+- initial build image 1.71GB
+
 Application health endpoint:
 
 ```
