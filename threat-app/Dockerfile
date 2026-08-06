@@ -27,6 +27,9 @@ WORKDIR /app
 #copy build folder (final build artifacts required to execute application) from builder stage into the build folder in runtime stage 
 COPY --from=builder /app/build /app/build 
 
+#copies installed dependencies (including express) from builder stage into runtime stage
+COPY --from=builder /app/node_modules /app/node_modules
+
 #installs the serve package globally, making the 'serve' command available to run the react production build as a web server 
 RUN yarn global add serve 
 
