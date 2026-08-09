@@ -28,8 +28,6 @@ Architecture components:
 - VPC and security groups for networking
 - CloudWatch for application logging
 
-![AWS Architecture](diagrams/aws_architecture.png)
-
 ---
 
 # Technology Stack
@@ -74,7 +72,11 @@ Features implemented:
 - Container health checks
 - Local container testing before deployment
 
-- initial build image 1.71GB
+## Docker Image Optimization
+
+- Used a multi stage build only the build artifacts (compiled React app + server file)
+are copied into the final runtime image, not the full build environment or dependencies.
+- This reduced the image size from 1.71GB to 225.94MB (~86.8% smaller).
 
 Application health endpoint:
 
