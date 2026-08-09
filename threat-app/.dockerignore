@@ -3,3 +3,6 @@ node_modules
 .gitignore
 Dockerfile
 .dockerignore
+#added so local build folder is not copied into container causing potential mismatch of files
+build 
+
