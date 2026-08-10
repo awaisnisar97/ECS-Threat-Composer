@@ -71,7 +71,7 @@ Features implemented:
 - Non root container execution
 - Container health checks
 - Local container testing before deployment
-![Docker container running and healthy](screenshots/docker-healthy.png)
+![Docker container running and healthy](threat-app/screenshots/docker-healthy.png)
 
 ## Docker Image Optimization
 
