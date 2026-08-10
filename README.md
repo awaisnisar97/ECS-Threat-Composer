@@ -71,7 +71,8 @@ Features implemented:
 - Non root container execution
 - Container health checks
 - Local container testing before deployment
-  </(image.png)>
+![Docker container running and healthy](screenshots/docker-healthy.png)
+
 ## Docker Image Optimization
 
 - Used a multi stage build only the build artifacts (compiled React app + server file)
