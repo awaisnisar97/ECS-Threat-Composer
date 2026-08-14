@@ -1,52 +1,49 @@
-#Build stage: uses alpine image to create application as builder
-FROM node:25-alpine AS builder 
+# STAGE 1: BUILD THE REACT APPLICATION
+# ============================================================
 
-#set working directory for app 
-WORKDIR /app 
+# Use Node.js only for building the React application.
+# Node is NOT included in the final production image.
+FROM node:22-alpine AS builder
 
-#copies the dependency files into current working directory 
+# Create and move into the application directory.
+WORKDIR /app
+
+# Copy the dependency files first.
+# package.json tells Yarn what dependencies are required.
+# yarn.lock records the exact dependency versions.
 COPY package.json yarn.lock ./
 
-#installs dependencies 
-RUN yarn install 
+# Install all dependencies required to build the application.
+RUN yarn install
 
-#copies remaining source code files into container 
+# Now copy the application source code.
 COPY . .
 
-#creates production build of app 
-RUN yarn build 
+# Build the React application for production.
+# This creates the production files inside /app/build.
+RUN yarn build
 
-#---runtime---
+# STAGE 2: PRODUCTION RUNTIME
+# ============================================================
 
-#smaller image only contains what is required to run the app
-FROM node:25-alpine AS runtime
+# Use Nginx as the production web server.
+# This image is designed to run Nginx without root privileges.
+# Node.js is NOT present in this final image.
+FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
 
-#sets working directory for the app
-WORKDIR /app 
+# Copy ONLY the production React build from the builder stage.
+# We don't need the source code or Node dependencies anymore.
+COPY --from=builder /app/build /usr/share/nginx/html
 
-#copy build folder (final build artifacts required to execute application) from builder stage into the build folder in runtime stage 
-COPY --from=builder /app/build /app/build 
+# Copy our custom Nginx configuration.
+# This configuration provides:
+#   - /health endpoint
+#   - React SPA route fallback
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-#copy our actual server file from the builder stage
-#(this is the file that runs the app and answers /health)
-COPY --from=builder /app/server.js ./
+# The unprivileged Nginx image listens on port 8080.
+EXPOSE 8080
 
-#creates group called appgroup, creates user called appuser and adds to appgroup 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup 
-
-#changes owndership and gives read/run permision to appuser in appgroup for /app
-RUN chown -R appuser:appgroup /app 
-
-#switches to appuser 
-USER appuser 
-
-#tell Docker to automatically check, every 30 seconds, whether the app is still alive
-#by requesting /health and expecting a successful response
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
-
-#document which port the app listens on inside the container
-EXPOSE 3000
-
-#starts the web server, enables single page application mode and serves files from the build folder
-CMD ["node", "server.js"]
+# Run Nginx in the foreground.
+# Docker needs the main process to remain running.
+CMD ["nginx", "-g", "daemon off;"]
