@@ -75,9 +75,8 @@ Features implemented:
 
 ## Docker Image Optimization
 
-- Used a multi stage build only the build artifacts (compiled React app + server file)
-are copied into the final runtime image, not the full build environment or dependencies.
-- This reduced the image size from 1.71GB to 225.94MB (~86.8% smaller).
+Docker image optimisation: The initial builder image was 1.66 GB. Using a multi stage build with an Nginx only runtime reduced the final production image to 82.5 MB, approximately a 95% reduction in image size.
+
 
 Application health endpoint:
 
