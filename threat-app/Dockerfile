@@ -1,5 +1,4 @@
 # STAGE 1: BUILD THE REACT APPLICATION
-# ============================================================
 
 # Use Node.js only for building the React application.
 # Node is NOT included in the final production image.
@@ -24,26 +23,18 @@ COPY . .
 RUN yarn build
 
 # STAGE 2: PRODUCTION RUNTIME
-# ============================================================
 
-# Use Nginx as the production web server.
-# This image is designed to run Nginx without root privileges.
-# Node.js is NOT present in this final image.
+# # Use Nginx (non root by default) as the production web server, no Node.js in this final image
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
 
-# Copy ONLY the production React build from the builder stage.
-# We don't need the source code or Node dependencies anymore.
+# Copy the finished React build from the builder stage into nginx's default folder for serving files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Copy our custom Nginx configuration.
-# This configuration provides:
-#   - /health endpoint
-#   - React SPA route fallback
+# Copy our custom Nginx config which sets up health route and serves react app, replaces nginx default config which gets renamed to default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # The unprivileged Nginx image listens on port 8080.
 EXPOSE 8080
 
-# Run Nginx in the foreground.
-# Docker needs the main process to remain running.
+# Docker running nginx, passes config file directly on command line instead of writing it in config file and keeps it running in foregorund (daemon off) 
 CMD ["nginx", "-g", "daemon off;"]
