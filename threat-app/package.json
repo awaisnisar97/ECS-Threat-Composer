@@ -66,7 +66,6 @@
     "browser-image-compression": "*",
     "d3": "^7",
     "eslint-plugin-header": "^3.1.1",
-    "express": "^5.2.1",
     "indefinite": "*",
     "lodash": "^4.17.21",
     "react-draggable": "^4.4.6",
