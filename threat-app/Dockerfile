@@ -1,7 +1,6 @@
 # STAGE 1: BUILD THE REACT APPLICATION
 
 # Use Node.js only for building the React application.
-# Node is NOT included in the final production image.
 FROM node:22-alpine AS builder
 
 # Create and move into the application directory.
@@ -24,7 +23,7 @@ RUN yarn build
 
 # STAGE 2: PRODUCTION RUNTIME
 
-# # Use Nginx (non root by default) as the production web server, no Node.js in this final image
+# Use Nginx (non root by default) as the production web server, no Node.js in this final image
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
 
 # Copy the finished React build from the builder stage into nginx's default folder for serving files
