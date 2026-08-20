@@ -2,10 +2,10 @@
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
 
-# adding a tag to the vpc resource so it displays the name in the AWS console
-    tags = {
-        Name = var.vpc_name
-    }
+  # adding a tag to the vpc resource so it displays the name in the AWS console
+  tags = {
+    Name = var.vpc_name
+  }
 }
 # creating a public subnet resource with the specified CIDR block and availability zone
 resource "aws_subnet" "public1" {
@@ -45,7 +45,7 @@ resource "aws_internet_gateway" "main" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
-# creating a route in the route table that directs all traffic (IPv4) to the internet gateway
+  # creating a route in the route table that directs all traffic (IPv4) to the internet gateway
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
@@ -67,10 +67,10 @@ resource "aws_route_table_association" "public2" {
 resource "aws_route_table" "private1" {
   vpc_id = aws_vpc.main.id
 
-   route {
+  route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main1.id   
-   }
+    nat_gateway_id = aws_nat_gateway.main1.id
+  }
 }
 
 # associating the private subnet 1 with the route table so that it can route traffic through the NAT Gateway
@@ -83,10 +83,10 @@ resource "aws_route_table_association" "private1" {
 resource "aws_route_table" "private2" {
   vpc_id = aws_vpc.main.id
 
-   route {
+  route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main2.id   
-   }
+    nat_gateway_id = aws_nat_gateway.main2.id
+  }
 }
 
 # associating the private subnet 2 with the route table so that it can route traffic through the NAT Gateway
