@@ -1,9 +1,11 @@
 module "vpc" {
   source = "./modules/vpc"
+
 }
 
 module "ecr" {
-  source = "./modules/ecr"
+  source   = "./modules/ecr"
+  ecr_name = var.ecr_name
 }
 
 module "ecs" {
