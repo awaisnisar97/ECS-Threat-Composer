@@ -8,11 +8,11 @@ resource "aws_lb" "alb" {
 
   enable_deletion_protection = true
 
-# enabling access logs for the ALB and specifying the S3 bucket and prefix for storing the logs
+  # enabling access logs for the ALB and specifying the S3 bucket and prefix for storing the logs
   access_logs {
-  bucket  = var.alb_access_log_bucket_name
-  prefix  = "test-lb"
-  enabled = true
+    bucket  = var.alb_access_log_bucket_name
+    prefix  = "test-lb"
+    enabled = true
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_lb_listener" "http_listener" {
   default_action {
     type = "redirect"
 
-# redirecting HTTP traffic to HTTPS with a 301 status code
+    # redirecting HTTP traffic to HTTPS with a 301 status code
     redirect {
       port        = "443"
       protocol    = "HTTPS"
