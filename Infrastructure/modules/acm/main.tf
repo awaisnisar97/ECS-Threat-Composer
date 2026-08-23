@@ -1,6 +1,6 @@
 # create an ACM certificate for the domain
 resource "aws_acm_certificate" "cert" {
-  domain_name       = var.domain_name
+  domain_name       = var.certificate_domain_name
   validation_method = "DNS"
 
 
@@ -11,7 +11,7 @@ resource "aws_acm_certificate" "cert" {
 
 # look up the existing public route 53 hosted zone for the domain
 data "aws_route53_zone" "cert" {
-  name         = var.domain_name
+  name         = var.route53_hosted_zone_name
   private_zone = false
 }
 
