@@ -8,9 +8,10 @@ resource "aws_lb" "alb" {
   enable_deletion_protection = true
 
   access_logs {
-  bucket  = var.alb_access_log_bucket_name
-  prefix  = "test-lb"
-  enabled = true
+    bucket  = var.alb_access_log_bucket_name
+    prefix  = "test-lb"
+    enabled = true
+  }
 }
 
 
