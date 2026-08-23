@@ -12,10 +12,7 @@ resource "aws_lb" "alb" {
   prefix  = "test-lb"
   enabled = true
 }
-    prefix  = "test-lb"
-    enabled = true
-  }
-}
+
 
 resource "aws_lb_target_group" "alb_tg" {
   name        = var.alb_target_group_name
