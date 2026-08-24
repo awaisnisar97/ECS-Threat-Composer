@@ -12,6 +12,7 @@ resource "aws_route53_record" "alb" {
   name    = var.route53_record_name
   type    = "A"
 
+# create an alias record for the ALB
   alias {
     name                   = var.alb_dns_name
     zone_id                = var.alb_zone_id
