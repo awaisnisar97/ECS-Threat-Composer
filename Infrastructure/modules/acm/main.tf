@@ -25,7 +25,7 @@ resource "aws_route53_record" "cert" {
     }
   }
 
-# allow overwriting the record if it already exists
+  # allow overwriting the record if it already exists
 
   allow_overwrite = true
   name            = each.value.name

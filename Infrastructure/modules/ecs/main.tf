@@ -92,14 +92,14 @@ resource "aws_ecs_service" "main" {
   desired_count   = var.ecs_service_desired_count
   launch_type     = "FARGATE"
 
-# defining the load balancer for the ECS service with the specified load balancer ARN, container name, and container port
+  # defining the load balancer for the ECS service with the specified load balancer ARN, container name, and container port
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name    = var.ecs_container_name
-    container_port    = var.ecs_container_port
+    container_name   = var.ecs_container_name
+    container_port   = var.ecs_container_port
   }
 
-# defining the network configuration for the ECS service with the specified subnets, security groups, and public IP assignment
+  # defining the network configuration for the ECS service with the specified subnets, security groups, and public IP assignment
   network_configuration {
     subnets          = var.private_subnet_ids
     security_groups  = [aws_security_group.ecs_service_sg.id]
@@ -116,15 +116,15 @@ resource "aws_security_group" "ecs_service_sg" {
 
 # allow my ECS tasks to receive TCP traffic on their container port, but only when the traffic comes from the ALB security group.
 resource "aws_vpc_security_group_ingress_rule" "allow_alb" {
-  security_group_id = aws_security_group.ecs_service_sg.id
+  security_group_id            = aws_security_group.ecs_service_sg.id
   referenced_security_group_id = var.load_balancer_sg_id
-  from_port   = var.ecs_container_port
-  to_port     = var.ecs_container_port
-  ip_protocol = "tcp"
+  from_port                    = var.ecs_container_port
+  to_port                      = var.ecs_container_port
+  ip_protocol                  = "tcp"
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_outbound" {
   security_group_id = aws_security_group.ecs_service_sg.id
   ip_protocol       = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-
+}
