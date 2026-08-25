@@ -38,7 +38,7 @@ variable "ecr_image_tag" {
   type        = string
 }
 
-variable "ecs_container_port" {
+variable "ecs_container _port" {
   description = "Port the ECS container listens on"
   type        = number
 }
