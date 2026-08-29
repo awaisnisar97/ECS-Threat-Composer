@@ -53,9 +53,23 @@ variable "ecr_name" {
   type        = string
 }
 
+variable "ecr_image_tag" {
+  description = "The tag of the container image used by ECS"
+  type        = string
+}
+
 variable "ecs_cluster_name" {
   description = "The name of the ECS cluster"
   type        = string
+}
+
+variable "ecs_service_name" {
+  description = "The name of the ECS service"
+  type        = string
+}
+
+variable "ecs_task_execution_role_name" {
+  type = string
 }
 
 variable "ecs_task_cpu" {
@@ -94,6 +108,10 @@ variable "ecs_task_family" {
   type        = string
 }
 
+variable "alb_name" {
+  description = "The name of the Application Load Balancer"
+  type        = string
+}
 variable "alb_access_log_bucket_name" {
   description = "The name of the S3 bucket for ALB access logs"
   type        = string
@@ -129,4 +147,8 @@ variable "route53_hosted_zone_name" {
   type        = string
 }
 
+variable "route53_record_name" {
+  description = "The DNS record name for the ALB"
+  type        = string
+}
 
