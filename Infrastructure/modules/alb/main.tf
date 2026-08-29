@@ -6,7 +6,7 @@ resource "aws_lb" "alb" {
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = var.public_subnet_ids
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   # enabling access logs for the ALB and specifying the S3 bucket and prefix for storing the logs
   access_logs {
