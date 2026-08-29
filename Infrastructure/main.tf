@@ -28,7 +28,7 @@ module "ecs" {
   ecs_task_cpu              = var.ecs_task_cpu
   ecs_task_memory           = var.ecs_task_memory
   ecr_repository_url        = module.ecr.ecr_repository_url
-  privatesubnet_ids         = [module.vpc.private_subnet1_id, module.vpc.private_subnet2_id]
+  private_subnet_ids         = [module.vpc.private_subnet1_id, module.vpc.private_subnet2_id]
   ecs_service_desired_count = var.ecs_service_desired_count
   ecs_container_name        = var.ecs_container_name
   ecs_container_port        = var.ecs_container_port
@@ -41,7 +41,7 @@ module "alb" {
   source = "./modules/alb"
 
   alb_access_log_bucket_name = var.alb_access_log_bucket_name
-  publicsubnet_ids           = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  public_subnet_ids           = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   alb_target_group_name      = var.alb_target_group_name
   alb_target_group_port      = var.alb_target_group_port
   alb_target_group_protocol  = var.alb_target_group_protocol
