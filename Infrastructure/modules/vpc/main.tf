@@ -101,8 +101,17 @@ resource "aws_nat_gateway" "main1" {
   subnet_id     = aws_subnet.public1.id
 }
 
+resource "aws_eip" "main1" {
+  domain = "vpc"
+}
+
+
 # creating a NAT gateway resource and associating it with the public subnet 2
 resource "aws_nat_gateway" "main2" {
   allocation_id = aws_eip.main2.id
   subnet_id     = aws_subnet.public2.id
+}
+
+resource "aws_eip" "main2" {
+  domain = "vpc"
 }
