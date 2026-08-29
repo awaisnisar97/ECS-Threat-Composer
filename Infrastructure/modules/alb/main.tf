@@ -83,7 +83,7 @@ resource "aws_security_group_ingress_rule" "allow_http" {
 }
 
 # creating an ingress rule for the ALB security group to allow inbound HTTPS traffic on port 443 from any IP address
-resource "aws_security_group_ingress_rule" "allow_https" {
+resource "aws_vpc_security_group_ingress_rule" "allow_https" {
   security_group_id = aws_security_group.alb_sg.id
   from_port         = 443
   to_port           = 443

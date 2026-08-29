@@ -27,7 +27,7 @@ module "ecs" {
   load_balancer_sg_id          = module.alb.alb_security_group_id
   ecs_service_name             = var.ecs_service_name
   vpc_id                       = module.vpc.vpc_id
-  ecs_task_execution_role_name = var.ecs.ecs_task_execution_role_name
+  ecs_task_execution_role_name = var.ecs_task_execution_role_name
   ecr_image_tag                = var.ecr_image_tag
   ecs_cluster_name             = var.ecs_cluster_name
   ecs_task_cpu                 = var.ecs_task_cpu
