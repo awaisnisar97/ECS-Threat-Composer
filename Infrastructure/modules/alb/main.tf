@@ -74,7 +74,7 @@ resource "aws_security_group" "alb_sg" {
 }
 
 # creating an ingress rule for the ALB security group to allow inbound HTTP traffic on port 80 from any IP address
-resource "aws_security_group_ingress_rule" "allow_http" {
+resource "aws_vpc_security_group_ingress_rule" "allow_http" {
   security_group_id = aws_security_group.alb_sg.id
   from_port         = 80
   to_port           = 80
