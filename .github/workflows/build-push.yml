@@ -35,6 +35,12 @@ jobs:
                 vuln-type: 'os,library'
                 severity: 'CRITICAL,HIGH'
 
+
+           - name: Show GitHub repository identifiers
+             run: |
+                echo "Repository: ${{ github.repository }}"
+                echo "Repository owner ID: ${{ github.repository_owner_id }}"
+                echo "Repository ID: ${{ github.repository_id }}"
            - name: configure AWS credentials 
              uses: aws-actions/configure-aws-credentials@v6.2.4
              with:
