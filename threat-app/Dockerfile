@@ -26,6 +26,15 @@ RUN yarn build
 # Use Nginx (non root by default) as the production web server, no Node.js in this final image
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
 
+# Temporarily switch to root to update Alpine packages
+USER root
+
+# Update Alpine package indexes and install the latest security fixes
+RUN apk update && apk upgrade
+
+# Switch back to the unprivileged Nginx user for runtime
+USER nginx 
+
 # Copy the finished React build from the builder stage into nginx's default folder for serving files
 COPY --from=builder /app/build /usr/share/nginx/html
 
