@@ -1,4 +1,7 @@
+# Name shown in github actions
 name: Build and push docker image to ECR
+
+# Run this workflow on push to main branch and also allow manual trigger
 on: 
     push:  
       branches:
@@ -6,25 +9,42 @@ on:
     
     workflow_dispatch:
 
+# Permissions to request an OIDC token and read the repository contents
 permissions: 
     id-token: write
     contents: read
+
+# Define the jobs to run in this workflow
 jobs: 
-    build-docker:
+
+# Job responsible for building, scanning and pushing the Docker image
+
+  build-docker:
         runs-on: ubuntu-latest
         
         steps:
+
+# Download the repository so the runner has access to the application and dockerfile
            - name: checkout code 
              uses: actions/checkout@v7 
+
+# Install and configure Docker Buildx
+# Buildx provides the modern Docker build functionality used by the workflow
            - name: set up Docker Buildx
              uses: docker/setup-buildx-action@v4
+
+# Build the Docker image from the threat-app directory
+# Load: true makes the image available to the runner's local Docker engine so Trivy can scan it before it is pushed
+# Github.sha gives the image a unique tag based on the commit
            - name: build docker image
              uses: docker/build-push-action@v7
              with:
                 context: ./threat-app
                 load: true 
                 tags: threatmod:${{ github.sha }}
-           
+
+# Scan the image for known security vulnerabilities
+# The workflow fails if HIGH or CRITICAL vulnerabilities are found
            - name: Run Trivy vulnerability scanner
              uses: aquasecurity/trivy-action@v0.36.0
              with:
@@ -35,16 +55,23 @@ jobs:
                 vuln-type: 'os,library'
                 severity: 'CRITICAL,HIGH'
 
+# Authenticate github actions to AWS using OIDC
+# No long term AWS access keys are stored in GitHub
            - name: configure AWS credentials 
              uses: aws-actions/configure-aws-credentials@v6.2.4
              with:
                 role-to-assume: arn:aws:iam::594566440241:role/gh-actions-ecr
                 aws-region: eu-west-2 
-           
+
+# Authenticate Docker with Amazon ECR
+# The registry address is returned through the login-ecr step output
            - name: login to aws ecr 
              id: login-ecr
              uses: aws-actions/amazon-ecr-login@v2     
 
+# Give the image its ECR address and push it to the repository
+# The same Git commit SHA is used as the ECR image tag
+# This makes each image uniquely identifiable and traceable to a commit
            - name: tag and push docker image to ecr
              env: 
                 REGISTRY: ${{ steps.login-ecr.outputs.registry }}

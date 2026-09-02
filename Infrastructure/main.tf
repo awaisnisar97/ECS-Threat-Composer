@@ -16,6 +16,7 @@ module "vpc" {
   privatesubnet2_cidr = var.privatesubnet2_cidr
 }
 
+
 module "ecr" {
   source   = "./modules/ecr"
   ecr_name = var.ecr_name

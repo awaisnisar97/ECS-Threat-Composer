@@ -1,0 +1,40 @@
+# Name shown in github actions
+
+name: tear down infrastructure built by terraform
+
+# Workflow can be triggered manually for now, can be changed to push to main branch later
+on:
+    workflow_dispatch:
+
+# Give the workflow permissions to request an OIDC token and read the repository contents
+permissions:
+    id-token: write
+    contents: read
+
+jobs: 
+
+# Job responsible for destroying the infrastructure built by terraform
+    destroy-infra:
+        runs-on: ubuntu-latest
+        name: destroy terraform infrastructure 
+        steps: 
+
+# Download the repository so the runner can access the Terraform configuration
+            - name: checkout code 
+              uses: actions/checkout@v7
+    
+# Authenticate github actions with AWS using OIDC, provides temporary credentials to the following steps
+# No long term AWS access keys are stored in GitHub
+            - name: configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v6.2.4
+              with:
+                role-to-assume: arn:aws:iam::594566440241:role/gh-actions-terraform
+                aws-region: eu-west-2
+
+# Run terraform destroy to tear down the infrastructure built by terraform
+# S3 backend is used to retrieve the existing state, so the destroy command knows what resources to destroy
+            - name: terraform destroy 
+              uses: dflook/terraform-destroy@v2
+              with: 
+                path: ./infrastructure
+                

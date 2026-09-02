@@ -1,19 +1,32 @@
+# Name shown in github actions
+
 name: security scan to check if any secrets will be pushed 
 
+# Run this workflow on push to main branch
 on: 
   push: 
     branches: 
         - main
 
+# Define the jobs github actions will run in this workflow 
 jobs: 
+
+# Job responsible for scanning the repository for exposed secrets 
     security-scan: 
         runs-on: ubuntu-latest 
        
         steps: 
+         
+# Download the repository so gitleaks can scan the files and git history 
             - name: checkout repository 
               uses: actions/checkout@v7 
               with: 
+
+# Fetch complete git history so gitleaks can scan the entire repository history for exposed secrets that may have been committed previously
                 fetch-depth: 0
+
+# Scan the repository for accidentally exposed secrets
+# GITHUB_TOKEN allows the Gitleaks action to interact with GitHub
             - uses: gitleaks/gitleaks-action@v3
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
