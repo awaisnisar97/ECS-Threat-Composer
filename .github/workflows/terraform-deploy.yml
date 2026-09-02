@@ -1,0 +1,68 @@
+# Name shown in github actions
+name: Build infrastructure and deploy to AWS ECS
+
+# Only run by manual trigger for now, can be changed to push to main branch later
+on: 
+    workflow_dispatch:
+
+# Give the workflow permissions to request an OIDC token and read the repository contents
+permissions: 
+    id-token: write
+    contents: read
+
+# Define the jobs to run in this workflow
+jobs: 
+    build-infra:
+        runs-on: ubuntu-latest
+
+# Download the repository so the runner can access the Terraform files
+        steps:
+           - name: checkout code 
+             uses: actions/checkout@v7 
+
+# Authenticate GitHub Actions to AWS using OIDC
+# No long term AWS access keys are stored in GitHub
+           - name: Configure AWS credentials
+             uses: aws-actions/configure-aws-credentials@v6.2.4
+             with:
+                role-to-assume: arn:aws:iam::594566440241:role/gh-actions-terraform
+                aws-region: eu-west-2
+
+# Install Terraform on the GitHub Actions runner
+
+           - uses: hashicorp/setup-terraform@v4  
+
+# Check that Terraform files follow the standard Terraform formatting
+# The workflow fails if formatting is incorrect  
+           - name: terraform fmt
+             id: fmt
+             run: terraform fmt -check
+             continue-on-error: false
+             working-directory: ./infrastructure
+
+# Initialise Terraform and connect to the configured backend
+# This also downloads the required Terraform providers and modules
+           - name: terraform init
+             id: init
+             run: terraform init -input=false
+             working-directory: ./infrastructure
+
+# Check that the Terraform configuration is valid
+# This catches configuration/syntax problems before planning 
+           - name: terraform validate
+             id: validate
+             run: terraform validate -no-color
+             working-directory: ./infrastructure
+
+# Work out what Terraform plans to change
+# -out saves that exact plan so the next step can apply it
+           - name: terraform plan
+             id: plan
+             run: terraform plan -no-color -input=false -out=tfplan
+             working-directory: ./infrastructure
+
+# Apply the exact plan created in the previous step
+           - name: terraform apply
+             id: apply
+             run: terraform apply -no-color -input=false tfplan
+             working-directory: ./infrastructure
