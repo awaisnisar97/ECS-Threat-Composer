@@ -16,11 +16,11 @@ module "vpc" {
   privatesubnet2_cidr = var.privatesubnet2_cidr
 }
 
-
-module "ecr" {
-  source   = "./modules/ecr"
-  ecr_name = var.ecr_name
+# Look up the ECR repository created by the bootstrap configuration
+data "aws_ecr_repository" "threat_composer" {
+  name = "threat-composer"
 }
+
 
 module "ecs" {
   source = "./modules/ecs"
@@ -33,7 +33,7 @@ module "ecs" {
   ecs_cluster_name             = var.ecs_cluster_name
   ecs_task_cpu                 = var.ecs_task_cpu
   ecs_task_memory              = var.ecs_task_memory
-  ecr_repository_url           = module.ecr.ecr_repository_url
+  ecr_repository_url           = data.aws_ecr_repository.threat_composer.repository_url
   private_subnet_ids           = module.vpc.private_subnet_ids
   ecs_service_desired_count    = var.ecs_service_desired_count
   ecs_container_name           = var.ecs_container_name
