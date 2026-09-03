@@ -79,7 +79,7 @@ variable "ecs_service_name" {
 }
 
 variable "ecs_task_execution_role_name" {
-  type = string
+  type    = string
   default = "threat-composer-ecs-execution-role"
 }
 
