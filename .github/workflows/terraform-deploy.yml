@@ -3,6 +3,7 @@ name: Build infrastructure and deploy to AWS ECS
 
 # Only run by manual trigger for now, can be changed to push to main branch later
 on: 
+    
     workflow_dispatch:
 
 # Give the workflow permissions to request an OIDC token and read the repository contents
@@ -58,7 +59,7 @@ jobs:
 # -out saves that exact plan so the next step can apply it
            - name: terraform plan
              id: plan
-             run: terraform plan -no-color -input=false -out=tfplan
+             run: terraform plan -no-color -input=false -var="ecr_image_tag=${{ github.sha }}" -out=tfplan
              working-directory: ./infrastructure
 
 # Apply the exact plan created in the previous step
@@ -66,3 +67,10 @@ jobs:
              id: apply
              run: terraform apply -no-color -input=false tfplan
              working-directory: ./infrastructure
+
+       
+           - name: health check on application 
+             run: curl --fail --retry 3 --retry-delay 5 https://tm.awaiscloud.click/health
+
+             
+           
