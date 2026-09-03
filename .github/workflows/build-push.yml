@@ -17,9 +17,33 @@ permissions:
 # Define the jobs to run in this workflow
 jobs: 
 
+# Create the ECR repository from bootstrap directory before building and pushing the Docker image.
+# This prevents a dependency issue because the Docker workflow needs the ECR repository to exist before the image can be pushed.
+  bootstrap-ecr:
+        runs-on: ubuntu-latest
+        steps: 
+          - name: checkout code 
+            uses: actions/checkout@v7
+          - name: configure AWS credentials 
+            uses: aws-actions/configure-aws-credentials@v6.2.4
+            with:
+                role-to-assume: arn:aws:iam::594566440241:role/gh-actions-terraform
+                aws-region: eu-west-2
+
+          - name: setup terraform
+            uses: hashicorp/setup-terraform@v4
+          - name: terraform init
+            working-directory: ./infrastructure/bootstrap
+            run: terraform init -input=false
+          - name: terraform apply
+            working-directory: ./infrastructure/bootstrap
+            run: terraform apply -auto-approve -input=false
+
+
 # Job responsible for building, scanning and pushing the Docker image
 
   build-docker:
+        needs: bootstrap-ecr 
         runs-on: ubuntu-latest
         
         steps:
