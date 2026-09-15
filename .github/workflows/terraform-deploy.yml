@@ -3,7 +3,7 @@ name: Build infrastructure and deploy to AWS ECS
 
 # Only run by manual trigger for now, can be changed to push to main branch later
 on: 
-    
+
     workflow_dispatch:
 
 # Give the workflow permissions to request an OIDC token and read the repository contents
@@ -20,6 +20,12 @@ jobs:
         steps:
            - name: checkout code 
              uses: actions/checkout@v7 
+
+           - name: Checkov Terraform security scan
+             uses: bridgecrewio/checkov-action@v12
+             with:
+                directory: ./infrastructure
+                framework: terraform
 
 # Authenticate GitHub Actions to AWS using OIDC
 # No long term AWS access keys are stored in GitHub
