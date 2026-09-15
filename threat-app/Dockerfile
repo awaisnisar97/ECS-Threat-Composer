@@ -6,9 +6,7 @@ FROM node:22-alpine AS builder
 # Create and move into the application directory.
 WORKDIR /app
 
-# Copy the dependency files first.
-# package.json tells Yarn what dependencies are required.
-# yarn.lock records the exact dependency versions.
+# Copy dependency files, pakcage.json tells yarn what dependecies are needed and yarn.lock records the exact dependency versions.
 COPY package.json yarn.lock ./
 
 # Install all dependencies required to build the application.
@@ -17,8 +15,7 @@ RUN yarn install
 # Now copy the application source code.
 COPY . .
 
-# Build the React application for production.
-# This creates the production files inside /app/build.
+# Build the react app and this creates the production files inside /app/build.
 RUN yarn build
 
 # STAGE 2: PRODUCTION RUNTIME
