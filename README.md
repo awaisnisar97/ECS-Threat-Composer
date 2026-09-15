@@ -1,5 +1,3 @@
-# 
-
 ## Overview
 
 This project demonstrates the design, deployment and automation of a multi stage containerised application running on Amazon ECS Fargate.
