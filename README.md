@@ -44,8 +44,6 @@ Architecture components:
 
 # Directory structure 
 
-## Directory Structure
-
 ```
 ECS-Threat-Composer/
 │
