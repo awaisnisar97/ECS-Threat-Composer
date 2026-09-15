@@ -239,6 +239,7 @@ Implemented security practices:
 - Separation of application and infrastructure code
 - Trivy scan for container vulnerabilities 
 - Gitleaks to detect any secrets being pushed 
+- Checkov scan for detecting security or configuration misconfigurations before deployment 
 - ECS tasks deployed in private subnets with no public IP addresses
 - ALB to ECS security group restrictions
 - Immutable ECR image tags using Git commit SHA
