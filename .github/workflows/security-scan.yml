@@ -5,11 +5,11 @@ name: security scan to check if any secrets will be pushed
 # Run this workflow on push to main branch
 on: 
   push: 
-  workflow_dispatch:
-
     branches: 
         - main
 
+  workflow_dispatch:
+      
 # Define the jobs github actions will run in this workflow 
 jobs: 
 
