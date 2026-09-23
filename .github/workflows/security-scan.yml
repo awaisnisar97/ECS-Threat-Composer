@@ -1,6 +1,6 @@
 # Name shown in github actions
 
-name: security scan to check if any secrets will be pushed 
+name: Security scan to check if any secrets will be pushed 
 
 # Run this workflow on push to main branch
 on: 

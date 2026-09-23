@@ -1,6 +1,6 @@
 # Name shown in github actions
 
-name: tear down infrastructure built by terraform
+name: Tear down infrastructure built by terraform
 
 # Workflow can be triggered manually for now, can be changed to push to main branch later
 on:
